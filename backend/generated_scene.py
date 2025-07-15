@@ -1,48 +1,51 @@
 from manim import *
 
-class MachineLearningExplanation(Scene):
+class NeuralNetworkAnimation(Scene):
     def construct(self):
-        title = Text("Machine Learning", font_size=48).to_edge(UP)
-        self.play(Write(title))
-        self.wait(1)
-
-        data_points = VGroup(*[
-            Dot(point, color=BLUE) for point in [
-                np.array([-3, 1, 0]),
-                np.array([-2, 2, 0]),
-                np.array([-1, 0.5, 0]),
-                np.array([1, -1, 0]),
-                np.array([2, -0.5, 0]),
-                np.array([3, -2, 0])
-            ]
-        ])
-
-        model = Square(color=RED).scale(1.5).shift(RIGHT*3)
-        model_label = Text("Model", color=RED).next_to(model, DOWN)
-
-        self.play(Create(data_points))
-        self.wait(0.5)
-        self.play(data_points.animate.shift(LEFT*3))
-        self.wait()
-
-        self.play(Create(model), Write(model_label))
-        self.wait()
-
-        arrows = VGroup(*[
-            Arrow(data_point.get_center(), model.get_left(), buff=0.1)
-            for data_point in data_points
-        ])
-
-        self.play(LaggedStart(*[Create(arrow) for arrow in arrows], lag_ratio=0.2))
-        self.wait()
-
-        output = Text("Predictions", color=GREEN).next_to(model, RIGHT*2)
-        self.play(Transform(arrows, Arrow(model.get_right(), output.get_left(), color=GREEN).scale(2)))
-        self.play(Write(output))
+        input_layer = VGroup(
+            *[Circle(radius=0.3, color=BLUE).set_fill(BLUE, opacity=0.5) for _ in range(3)]
+        ).arrange(DOWN, buff=1)
+        
+        hidden_layer = VGroup(
+            *[Circle(radius=0.3, color=GREEN).set_fill(GREEN, opacity=0.5) for _ in range(4)]
+        ).arrange(DOWN, buff=0.6).shift(RIGHT * 2)
+        
+        output_layer = VGroup(
+            *[Circle(radius=0.3, color=RED).set_fill(RED, opacity=0.5) for _ in range(2)]
+        ).arrange(DOWN, buff=1.5).shift(RIGHT * 4)
+        
+        input_label = Text("Input Layer").next_to(input_layer, UP)
+        hidden_label = Text("Hidden Layer").next_to(hidden_layer, UP)
+        output_label = Text("Output Layer").next_to(output_layer, UP)
+        
+        self.play(
+            LaggedStart(
+                *[FadeIn(circle) for circle in input_layer],
+                *[FadeIn(circle) for circle in hidden_layer],
+                *[FadeIn(circle) for circle in output_layer],
+                lag_ratio=0.2
+            )
+        )
+        self.play(
+            Write(input_label),
+            Write(hidden_label),
+            Write(output_label)
+        )
+        
+        connections = []
+        for in_node in input_layer:
+            for h_node in hidden_layer:
+                connections.append(Line(in_node, h_node, stroke_width=1, color=WHITE))
+        
+        for h_node in hidden_layer:
+            for out_node in output_layer:
+                connections.append(Line(h_node, out_node, stroke_width=1, color=WHITE))
+        
+        self.play(
+            LaggedStart(
+                *[Create(connection) for connection in connections],
+                lag_ratio=0.05
+            )
+        )
+        
         self.wait(2)
-
-        learning_process = Text("Learns patterns from data", color=YELLOW).next_to(title, DOWN)
-        self.play(Write(learning_process))
-        self.wait(2)
-
-        self.play(*[FadeOut(mob) for mob in self.mobjects])
