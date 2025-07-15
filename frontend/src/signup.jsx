@@ -1,10 +1,10 @@
 import { useState } from "react"
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
-export default function Signin(){
+export default function Signup(){
     const navigate = useNavigate();
     const handleOnClick = async() => {
-        const response = await axios.post("http://localhost:8000/signin", 
+        const response = await axios.post("http://localhost:8000/signup", 
             {
                 username : username,
                 password: password
@@ -13,7 +13,7 @@ export default function Signin(){
             }
         )
         console.log(response.data.inserted_id)
-        navigate("/dashboard");
+        navigate("/signin");
     }
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");

@@ -1,51 +1,25 @@
 from manim import *
 
-class NeuralNetworkAnimation(Scene):
+class TrigonometryExplanation(Scene):
     def construct(self):
-        input_layer = VGroup(
-            *[Circle(radius=0.3, color=BLUE).set_fill(BLUE, opacity=0.5) for _ in range(3)]
-        ).arrange(DOWN, buff=1)
-        
-        hidden_layer = VGroup(
-            *[Circle(radius=0.3, color=GREEN).set_fill(GREEN, opacity=0.5) for _ in range(4)]
-        ).arrange(DOWN, buff=0.6).shift(RIGHT * 2)
-        
-        output_layer = VGroup(
-            *[Circle(radius=0.3, color=RED).set_fill(RED, opacity=0.5) for _ in range(2)]
-        ).arrange(DOWN, buff=1.5).shift(RIGHT * 4)
-        
-        input_label = Text("Input Layer").next_to(input_layer, UP)
-        hidden_label = Text("Hidden Layer").next_to(hidden_layer, UP)
-        output_label = Text("Output Layer").next_to(output_layer, UP)
-        
-        self.play(
-            LaggedStart(
-                *[FadeIn(circle) for circle in input_layer],
-                *[FadeIn(circle) for circle in hidden_layer],
-                *[FadeIn(circle) for circle in output_layer],
-                lag_ratio=0.2
-            )
-        )
-        self.play(
-            Write(input_label),
-            Write(hidden_label),
-            Write(output_label)
+        circle = Circle(radius=2, color=WHITE)
+        axes = Axes(
+            x_range=[-3, 3, 1],
+            y_range=[-3, 3, 1],
+            axis_config={"color": BLUE},
         )
         
-        connections = []
-        for in_node in input_layer:
-            for h_node in hidden_layer:
-                connections.append(Line(in_node, h_node, stroke_width=1, color=WHITE))
+        angle = 45 * DEGREES
+        line = Line(ORIGIN, circle.point_at_angle(angle), color=YELLOW)
+        arc = Arc(radius=0.5, start_angle=0, angle=angle, color=RED)
         
-        for h_node in hidden_layer:
-            for out_node in output_layer:
-                connections.append(Line(h_node, out_node, stroke_width=1, color=WHITE))
+        dot = Dot(line.get_end(), color=YELLOW)
+        x_line = DashedLine(line.get_end(), [line.get_end()[0], 0, 0], color=GREEN)
+        y_line = DashedLine(line.get_end(), [0, line.get_end()[1], 0], color=PURPLE)
         
-        self.play(
-            LaggedStart(
-                *[Create(connection) for connection in connections],
-                lag_ratio=0.05
-            )
-        )
-        
+        self.play(Create(axes), Create(circle))
+        self.wait(0.5)
+        self.play(Create(line), Create(arc), Create(dot))
+        self.wait(0.5)
+        self.play(Create(x_line), Create(y_line))
         self.wait(2)
