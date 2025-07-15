@@ -1,0 +1,19 @@
+# Core
+manim  # Or latest stable CE version
+numpy
+scipy
+
+# Backend
+fastapi
+uvicorn[standard]
+
+# AI Integration
+openai  # for OpenAI-compatible APIs like OpenRouter
+# Optional tools (only if you're using them)
+python-dotenv  # if you're loading API keys from .env
+requests       # for manual API calls
+typing
+bson
+openai
+pymongo
+cloudinary

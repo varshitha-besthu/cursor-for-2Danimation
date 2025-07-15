@@ -1,48 +1,25 @@
 from manim import *
 
-class MachineLearningExplanation(Scene):
+class TrigonometryExplanation(Scene):
     def construct(self):
-        title = Text("Machine Learning", font_size=48).to_edge(UP)
-        self.play(Write(title))
-        self.wait(1)
-
-        data_points = VGroup(*[
-            Dot(point, color=BLUE) for point in [
-                np.array([-3, 1, 0]),
-                np.array([-2, 2, 0]),
-                np.array([-1, 0.5, 0]),
-                np.array([1, -1, 0]),
-                np.array([2, -0.5, 0]),
-                np.array([3, -2, 0])
-            ]
-        ])
-
-        model = Square(color=RED).scale(1.5).shift(RIGHT*3)
-        model_label = Text("Model", color=RED).next_to(model, DOWN)
-
-        self.play(Create(data_points))
+        circle = Circle(radius=2, color=WHITE)
+        axes = Axes(
+            x_range=[-3, 3, 1],
+            y_range=[-3, 3, 1],
+            axis_config={"color": BLUE},
+        )
+        
+        angle = 45 * DEGREES
+        line = Line(ORIGIN, circle.point_at_angle(angle), color=YELLOW)
+        arc = Arc(radius=0.5, start_angle=0, angle=angle, color=RED)
+        
+        dot = Dot(line.get_end(), color=YELLOW)
+        x_line = DashedLine(line.get_end(), [line.get_end()[0], 0, 0], color=GREEN)
+        y_line = DashedLine(line.get_end(), [0, line.get_end()[1], 0], color=PURPLE)
+        
+        self.play(Create(axes), Create(circle))
         self.wait(0.5)
-        self.play(data_points.animate.shift(LEFT*3))
-        self.wait()
-
-        self.play(Create(model), Write(model_label))
-        self.wait()
-
-        arrows = VGroup(*[
-            Arrow(data_point.get_center(), model.get_left(), buff=0.1)
-            for data_point in data_points
-        ])
-
-        self.play(LaggedStart(*[Create(arrow) for arrow in arrows], lag_ratio=0.2))
-        self.wait()
-
-        output = Text("Predictions", color=GREEN).next_to(model, RIGHT*2)
-        self.play(Transform(arrows, Arrow(model.get_right(), output.get_left(), color=GREEN).scale(2)))
-        self.play(Write(output))
+        self.play(Create(line), Create(arc), Create(dot))
+        self.wait(0.5)
+        self.play(Create(x_line), Create(y_line))
         self.wait(2)
-
-        learning_process = Text("Learns patterns from data", color=YELLOW).next_to(title, DOWN)
-        self.play(Write(learning_process))
-        self.wait(2)
-
-        self.play(*[FadeOut(mob) for mob in self.mobjects])
