@@ -7,9 +7,8 @@ const VideoPlayer = ({url}) => {
   const cloudinaryUrl = url; 
 
   return (
-    <div>
-      <h2>Cloudinary Video</h2>
-      <video width="600" controls>
+    <div className='flex justify-center mt-4 mb-4'>
+      <video width="800" controls>
         <source src={cloudinaryUrl} type="video/mp4" />
         Your browser does not support the video tag.
       </video>
