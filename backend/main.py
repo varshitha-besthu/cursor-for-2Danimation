@@ -18,10 +18,12 @@ from fastapi import Depends
 from configurations import user_collection
 import sys
 import shutil
+from starlette.middleware.sessions import SessionMiddleware
 manim_path = shutil.which("manim")
 
 class PromptRequest(BaseModel):
     prompt: str
+    conversationId: str
 
 load_dotenv()
 client = OpenAI(
@@ -33,6 +35,7 @@ app = FastAPI()
 origins = [
      "http://localhost:5173",
 ]
+app.add_middleware(SessionMiddleware, secret_key=os.getenv("SESSION_SECRET_KEY", "super-secret-key"))
 app.include_router(userRouter)
 # app.include_router(uploadRouter)
 app.add_middleware(
@@ -46,19 +49,20 @@ app.add_middleware(
 @app.post("/generate_video")
 async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(get_current_user_id)):
     try:
-        response = client.chat.completions.create(
-            model="deepseek/deepseek-chat-v3-0324:free",
-            messages=[{"role":"user","content":f"You are a Manim expert. Return only valid Manim Community Edition Python code. Do not include any explanations or comments. I want just the code block, nothing else. Avoid using any external libraries like scipy, numpy, or networkx. Use only core Manim features. Keep the code minimal, with one class .Add import statment for manim. Now create a Manim animation to explain {promptRequest.prompt}."}]
-        )
+        # response = client.chat.completions.create(
+        #     model="deepseek/deepseek-chat-v3-0324:free",
+        #     messages=[{"role":"user","content":f"You are a Manim expert. Return only valid Manim Community Edition Python code. Do not include any explanations or comments. I want just the code block, nothing else. Avoid using any external libraries like scipy, numpy, or networkx. Use only core Manim features. Keep the code minimal, with one class .Add import statment for manim. Now create a Manim animation to explain {promptRequest.prompt}."}]
+        # )
 
-        code = response.choices[0].message.content
-        cleaned_code = code.replace("```python", "").replace("```", "").strip()
+        # code = response.choices[0].message.content
+        # cleaned_code = code.replace("```python", "").replace("```", "").strip()
 
-        with open("generated_scene.py", "w", encoding="utf-8") as f:
-            f.write(cleaned_code);
-        match = re.search(r"class\s+(\w+)\s*\(\s*Scene\s*\):", cleaned_code)
+        # with open("generated_scene.py", "w", encoding="utf-8") as f:
+        #     f.write(cleaned_code);
+        # match = re.search(r"class\s+(\w+)\s*\(\s*Scene\s*\):", cleaned_code)
 
-        class_name = match.group(1) if match else "GeneratedScene"
+        # class_name = match.group(1) if match else "GeneratedScene"
+        class_name="HelloScene"
         with open("classname.txt", "w") as f:
             f.write(class_name);
         
@@ -79,7 +83,8 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
                 env=env,
                 stdout=f,
                 stderr=subprocess.STDOUT,
-                check=True
+                check=True,
+                 start_new_session=True
             )
         print("fuck it completed the generate_scene.py")
         video_path = rf"C:\Users\varsh\Desktop\2D-animations-video\backend\media\videos\generated_scene\480p15\{class_name}.mp4"
@@ -89,7 +94,7 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
         
         url = upload_video(video_path)
 
-        video_data = {"prompt": promptRequest.prompt, "url": url}
+        video_data = {"prompt": promptRequest.prompt, "url": url, "conversationId": promptRequest.conversationId}
         update_result = user_collection.update_one(
             {"_id": ObjectId(user_id)},
             {"$push": {"videos": video_data}}
