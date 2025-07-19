@@ -56,11 +56,11 @@ export default function Chat(){
     {
         if(currentVideo.length === 0){
             return (
-            <div className="h-screen w-screen flex items-center justify-center bg-yellow-500">
+            <div className="h-screen w-screen flex items-center justify-center ">
                 
 
                 {/* TextArea */}
-                <div className=" bg-red-500">
+                <div className="">
                     <div className="text-4xl text-center mb-4 ">How can I help you today??</div>
                     <div>
                         <textarea name="message" rows="5" cols="75 " className="rounded-3xl bg-neutral-700 outline-none border-none pl-4 pt-2 text-md" placeholder="Ask Anything here" onKeyDown={handleKeyDown} onChange={(e) => setPrompt(e.target.value)} value={prompt}>
@@ -82,15 +82,9 @@ export default function Chat(){
                                 <div className="bg-neutral-600 rounded-xl px-4 py-2 text-start w-[800px] text-xl">{video.prompt}</div>
                             </div>
                             <VideoPlayer url={video.url} />
-                            
-                            
-                            
                         </div>
-                        
-                        
                     ))
                 }
-
 
                 <div className="text-end flex justify-end ">
                     <div className="flex">
@@ -129,7 +123,7 @@ export default function Chat(){
                             
                     <textarea name="message" rows="5" cols="100" className="rounded-3xl bg-neutral-700 outline-none border-none pl-4 pt-2 text-md" placeholder="Ask Anything here" onKeyDown={handleKeyDown} onChange={(e) => setPrompt(e.target.value)} value={prompt}>
                                 
-                            </textarea>
+                    </textarea>
                 </div>
             </div>
       

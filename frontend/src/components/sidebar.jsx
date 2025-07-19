@@ -38,7 +38,7 @@ export default function Sidebar(){
                 setConversationId(id)
                 // console.log(id)
             }}>
-                <div className="flex items-center">
+                <div className={`hover:bg-neutral-400 flex items-center ${sidebar ? "bg-neutral-100 text-black px-4 py-2" : ""} rounded-xl`}>
                     <SquarePen size={"14"}/> 
                     <div className={`${sidebar ? "pl-2 text-sm" : "hidden"}`}>New Chat</div>
                 
@@ -68,8 +68,8 @@ export default function Sidebar(){
             }
         </div>
         
-        <div className="fixed bottom-2 max-w-[190px] bg-neutral-800 rounded-xl">
-            <div className="bg-red-white flex gap-1 pl-1 pr-4 py-3 w-auto  ">
+    <div className={`fixed bottom-2 ${sidebar ? "max-w-[190px] min-w-[190px] pl-1 pr-4 py-3" : "max-w-[28px] min-w-[28px] pl-1"}  bg-neutral-800 rounded-xl `}>
+            <div className="bg-red-white flex gap-1  w-auto  ">
                 <img src={picture} height="22px" width="22px" className="rounded-full"/>
                 <div className={`overflow-hidden text-ellipsis whitespace-nowrap ${sidebar ? "" : "hidden"}`}>
                     {userName}
