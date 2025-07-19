@@ -14,10 +14,11 @@ from starlette.responses import RedirectResponse
 from jose import jwt
 from dotenv import load_dotenv
 from uuid import uuid4
+from datetime import datetime
+from collections import defaultdict
 import os
 load_dotenv()
 
-# OAuth setup
 oauth = OAuth()
 oauth.register(
     name='google',
@@ -48,6 +49,7 @@ class Video(BaseModel):
 class User(BaseModel):
     username: str
     password: str
+    picture: str
     videos: Optional[List[Video]] = []
 
 class LoginRequest(BaseModel):
@@ -59,7 +61,6 @@ class AddVideoRequest(BaseModel):
     prompt: str
     url: str
 
-    
 @userRouter.get("/login/google")
 async def login_google(request: Request):
     redirect_uri = request.url_for('google_callback')
@@ -68,25 +69,18 @@ async def login_google(request: Request):
 @userRouter.get("/auth/google")
 async def google_callback(request: Request):
     token = await oauth.google.authorize_access_token(request)
-    # print("🔑 TOKEN:", token)
-    # user_info = await oauth.google.parse_id_token(request, token)
     user_info = token.get("userinfo")
-
-
     email = user_info.get("email")
-    name = user_info.get("name", "NoName")
-
+    name = user_info.get("name")  
+    picture = user_info.get("picture")  
     existing_user = user_collection.find_one({"username": email})
     if not existing_user:
-        user_data = {"username": email, "name": name, "password": None}
+        user_data = {"username": email, "name": name, "password": None, "picture": picture}
         result = user_collection.insert_one(user_data)
         user_id = result.inserted_id
     else:
         user_id = existing_user["_id"]
-
     access_token = create_access_token({"user_id": str(user_id)})
-
-    # ✅ Set the cookie in a response object
     response = RedirectResponse(url="http://localhost:5173/dashboard")
     response.set_cookie(
         key="access_token",
@@ -97,10 +91,20 @@ async def google_callback(request: Request):
     )
     return response
 
+@userRouter.get("/userInfo")
+def userInformation(user_id: str = Depends(get_current_user_id)):
+    user = user_collection.find_one({"_id": ObjectId(user_id)})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    name = user.get("username", "")
+    picture = user.get("picture", "")
+
+    return {"name": name, "picture": picture}
+
 
 @userRouter.post("/signup")
 def signup(user: User):
-    # Check if user already exists
     existing_user = user_collection.find_one({"username": user.username.strip().lower()})
     if existing_user:
         raise HTTPException(status_code=400, detail="Username already exists")
@@ -155,21 +159,29 @@ def get_user_videos(user_id: str = Depends(get_current_user_id)):
         "videos": user.get("videos", [])
     }
 
-@userRouter.get("/getVideosByConversation/{conversation_id}")
-def get_videos_by_conversation(conversation_id: str, user_id: str = Depends(get_current_user_id)):
+@userRouter.get("/grouped_by_conversation")
+async def get_grouped_videos(user_id: str = Depends(get_current_user_id)):
     user = user_collection.find_one({"_id": ObjectId(user_id)})
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    all_videos = user.get("videos", [])
-    filtered = [
-        {"prompt": v["prompt"], "url": v["url"]}
-        for v in all_videos
-        if v.get("conversationId") == conversation_id
-    ]
+    user_videos = user.get("videos", [])
 
-    return {"conversationId": conversation_id, "videos": filtered}
+    # Group videos by conversationId
+    grouped_by_conversation = {}
+    for video in user_videos:
+        conv_id = video.get("conversationId")
+        if conv_id:
+            grouped_by_conversation.setdefault(conv_id, []).append(video)
 
+    # Sort videos inside each group by timestamp (oldest first)
+    result = []
+    for conv_id, videos in grouped_by_conversation.items():
+        sorted_videos = sorted(videos, key=lambda v: v["timestamp"])
+        result.append(sorted_videos)
+    # result.sort(key=lambda group: group["videos"][-1]["timestamp"], reverse=True)
+
+    return result[::-1]
 
 @userRouter.post("/logout")
 def logout(response: Response):
