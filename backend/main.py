@@ -10,13 +10,15 @@ from fastapi.middleware.cors import CORSMiddleware
 # from router.upload import router as uploadRouter
 from libs.cloudinary import upload_video
 from starlette.concurrency import run_in_threadpool
-from pydantic import BaseModel
+from pydantic import BaseModel,Field
 from middleware import get_current_user_id
 import subprocess
 from bson import ObjectId
 from fastapi import Depends
 from configurations import user_collection
 import sys
+from datetime import datetime
+
 import shutil
 from starlette.middleware.sessions import SessionMiddleware
 manim_path = shutil.which("manim")
@@ -24,6 +26,7 @@ manim_path = shutil.which("manim")
 class PromptRequest(BaseModel):
     prompt: str
     conversationId: str
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
 
 load_dotenv()
 client = OpenAI(
@@ -94,7 +97,7 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
         
         url = upload_video(video_path)
 
-        video_data = {"prompt": promptRequest.prompt, "url": url, "conversationId": promptRequest.conversationId}
+        video_data = {"prompt": promptRequest.prompt, "url": url, "conversationId": promptRequest.conversationId,"timestamp": promptRequest.timestamp}
         update_result = user_collection.update_one(
             {"_id": ObjectId(user_id)},
             {"$push": {"videos": video_data}}

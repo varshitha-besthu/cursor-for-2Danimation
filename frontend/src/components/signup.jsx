@@ -13,7 +13,7 @@ export default function Signup() {
                 { username, password },
                 { withCredentials: true }
             );
-            console.log("Inserted ID:", response.data.inserted_id);
+            // console.log("Inserted ID:", response.data.inserted_id);
             navigate("/signin");
         } catch (error) {
             console.error("Signup failed:", error.response?.data || error.message);

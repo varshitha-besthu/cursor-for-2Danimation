@@ -12,7 +12,7 @@ export default function Signin(){
                 withCredentials: true
             }
         )
-        console.log(response.data.inserted_id)
+        // console.log(response.data.inserted_id)
         navigate("/dashboard");
     }
     const [username, setUsername] = useState("");
