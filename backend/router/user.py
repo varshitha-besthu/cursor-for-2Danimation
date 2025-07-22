@@ -118,7 +118,7 @@ def signup(user: User):
 def signin(login: LoginRequest, response: Response):
     user = user_collection.find_one({
         "username": login.username.strip().lower(),
-        "password": login.password  # in real apps, hash this!
+        "password": login.password  
     })
 
     if not user:
