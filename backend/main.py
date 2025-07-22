@@ -36,7 +36,7 @@ client = OpenAI(
 
 app = FastAPI()
 origins = [
-     "https://cursor-for-2-danimation-ouy72ez04.vercel.app",
+     "https://cursor-for-2-danimation.vercel.app",
 ]
 app.add_middleware(SessionMiddleware, secret_key=os.getenv("SESSION_SECRET_KEY", "super-secret-key"))
 app.include_router(userRouter)
