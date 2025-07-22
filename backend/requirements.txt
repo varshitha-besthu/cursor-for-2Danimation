@@ -14,5 +14,6 @@ python-dotenv  # if you're loading API keys from .env
 requests       # for manual API calls
 typing
 openai
+python-jose[cryptography]
 pymongo
 cloudinary
