@@ -25,8 +25,7 @@ pymongo
 cloudinary
 
 # Utility & Typing
-typing  # not strictly needed in Python 3.5+, but harmless
-bson  # for ObjectId usage
+typing 
 python-multipart  # if you're dealing with form-data uploads (FastAPI requires it for file uploads)
 
 # Sessions
