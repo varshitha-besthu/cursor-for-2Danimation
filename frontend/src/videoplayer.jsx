@@ -1,3 +1,4 @@
+import { Download } from 'lucide-react';
 import React from 'react';
 
 const VideoPlayer = ({url}) => {
@@ -12,6 +13,7 @@ const VideoPlayer = ({url}) => {
         <source src={cloudinaryUrl} type="video/mp4" />
         Your browser does not support the video tag.
       </video>
+      
     </div>
   );
 };

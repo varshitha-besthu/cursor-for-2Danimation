@@ -52,20 +52,20 @@ app.add_middleware(
 @app.post("/generate_video")
 async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(get_current_user_id)):
     try:
-        # response = client.chat.completions.create(
-        #     model="deepseek/deepseek-chat-v3-0324:free",
-        #     messages=[{"role":"user","content":f"You are a Manim expert. Return only valid Manim Community Edition Python code. Do not include any explanations or comments. I want just the code block, nothing else. Avoid using any external libraries like scipy, numpy, or networkx. Use only core Manim features. Keep the code minimal, with one class .Add import statment for manim. Now create a Manim animation to explain {promptRequest.prompt}."}]
-        # )
+        response = client.chat.completions.create(
+            model="deepseek/deepseek-chat-v3-0324:free",
+            messages=[{"role":"user","content":f"You are a Manim expert. Return only valid Manim Community Edition Python code. Do not include any explanations or comments. I want just the code block, nothing else. Avoid using any external libraries like scipy, numpy, or networkx. Use only core Manim features. Keep the code minimal, with one class .Add import statment for manim. Now create a Manim animation to explain {promptRequest.prompt}."}]
+        )
 
-        # code = response.choices[0].message.content
-        # cleaned_code = code.replace("```python", "").replace("```", "").strip()
+        code = response.choices[0].message.content
+        cleaned_code = code.replace("```python", "").replace("```", "").strip()
 
-        # with open("generated_scene.py", "w", encoding="utf-8") as f:
-        #     f.write(cleaned_code);
-        # match = re.search(r"class\s+(\w+)\s*\(\s*Scene\s*\):", cleaned_code)
+        with open("generated_scene.py", "w", encoding="utf-8") as f:
+            f.write(cleaned_code);
+        match = re.search(r"class\s+(\w+)\s*\(\s*Scene\s*\):", cleaned_code)
 
-        # class_name = match.group(1) if match else "GeneratedScene"
-        class_name="HelloScene"
+        class_name = match.group(1) if match else "GeneratedScene"
+        # class_name="HelloScene"
         with open("classname.txt", "w") as f:
             f.write(class_name);
         
@@ -74,21 +74,31 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
         env = os.environ.copy()  
         # result = await run_in_threadpool(render_video_sync)
         with open("render.log", "w") as f:
-            result = subprocess.run(
-                [
-                    "manim",
-                    "generated_scene.py",
-                    class_name,
-                    "-pql",
-                    "--output_file", f"{class_name}.mp4"
-                ],
-                cwd=os.getcwd(),
-                env=env,
-                stdout=f,
-                stderr=subprocess.STDOUT,
-                check=True,
-                 start_new_session=True
-            )
+            try :
+                result = subprocess.run(
+                    [
+                        "manim",
+                        "generated_scene.py",
+                        class_name,
+                        "-ql",
+                        "--output_file", f"{class_name}.mp4"
+                    ],
+                    cwd=os.getcwd(),
+                    env=env,
+                    stdout=f,
+                    stderr=subprocess.STDOUT,
+                    check=True,
+                    start_new_session=True,
+                    timeout=500
+                )
+            except KeyboardInterrupt:
+                print("Rendering interrupted by user.")
+                return {"return code": 130, "output": "User interrupted the process"}
+            except subprocess.CalledProcessError as e:
+                print("Return code:", e.returncode)
+            
+
+
         print("fuck it completed the generate_scene.py")
         video_path = rf"C:\Users\varsh\Desktop\2D-animations-video\backend\media\videos\generated_scene\480p15\{class_name}.mp4"
 
@@ -112,17 +122,3 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
         return {"error": result.stderr}
     
     return {"message": "✅ Video generated" , "data" : {"url": url}};
-
-
-# def render_video_sync():
-#     print("Started to run the generate_manim_scene")
-#     result = subprocess.run(
-#             [sys.executable, "generate_manim_scene.py"],  # 
-#             capture_output=True,
-#             timeout=500,  
-#             text=True,
-#             encoding="utf-8",  
-#             errors="replace"
-#         )
-#     # print("Runned the generate_manim_scene")
-#     return result
