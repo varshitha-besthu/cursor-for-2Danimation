@@ -84,10 +84,10 @@ async def google_callback(request: Request):
     response = RedirectResponse(url="http://localhost:5173/dashboard")
     response.set_cookie(
         key="access_token",
-        value=access_token,
+        value=token,
         httponly=True,
-        secure=False,
-        samesite="Lax"
+        secure=True,
+        samesite="None"
     )
     return response
 
@@ -130,8 +130,8 @@ def signin(login: LoginRequest, response: Response):
         key="access_token",
         value=token,
         httponly=True,
-        secure=False,
-        samesite="Lax"
+        secure=True,
+        samesite="None",
     )
 
     return {"message": "Login successful", "user_id": str(user["_id"])}

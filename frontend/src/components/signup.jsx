@@ -9,8 +9,8 @@ export default function Signup() {
 
     const handleOnClick = async () => {
         try {
-            const response = await axios.post("http://localhost:8000/signup", 
-                { username, password },
+            const response = await axios.post("https://cursor-for-2danimation.onrender.com/signup", 
+                { username, password, picture: "hello guru kosame ra jeeveihtam"},
                 { withCredentials: true }
             );
             navigate("/signin");
@@ -28,7 +28,7 @@ export default function Signup() {
                     <button className="bg-neutral-800  justify-center hover:bg-neutral-600 text-white border border-neutral-600 flex px-8 py-2 rounded-xl items-center gap-2" 
                     onClick={
                         () => {
-                            window.location.href="http://localhost:8000/login/google";
+                            window.location.href="https://cursor-for-2danimation.onrender.com/login/google";
                     }}>
                         <img src="https://www.citypng.com/public/uploads/preview/google-logo-icon-gsuite-hd-701751694791470gzbayltphh.png" className="w-[20x] h-[20px] rounded-xl "/>
                         <div className="text-center text-md">Google</div>
