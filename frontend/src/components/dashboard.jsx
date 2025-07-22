@@ -10,6 +10,7 @@ import { videosAtom } from "../store/videosAtom";
 import { conversationClick } from "../store/conversationClick";
 import { userNameAtom } from "../store/usernameAtom";
 import { pictureAtom } from "../store/pictureAtom";
+import { errorAtom } from "../store/errorAtom";
 
 export default function DashBoard() {
   // const [videos, setVideos] = useState([]); 
@@ -21,6 +22,8 @@ export default function DashBoard() {
   const [loading, setLoading] = useState(false);
   const [prompt, setPrompt] = useState("");
   const [currentVideo, setCurrentVideo] = useState([]);
+  const error = useRecoilValue(errorAtom);
+  const setError = useSetRecoilState(errorAtom); 
 
   const userName = useRecoilValue(userNameAtom);
   const picture = useRecoilValue(pictureAtom);
@@ -47,44 +50,58 @@ export default function DashBoard() {
       }
     };
     fetchVideos();
-  }, [isNewChat]);
+  }, [isNewChat,currentVideo]);
 
   useEffect(() => {
-  //   console.log(videos)
+    console.log(videos)
+    console.log(currentVideo)
   //   console.log(convoClick);
   }, [videos])
 
-    const handleOnClick = async () => {
-        try {
-          setLoading(true)
-        let selectedconversationId = "";
-        const keys = Object.keys(convoClick).reverse();
+  
+  const handleOnClick = async () => {
+    try {
+      setLoading(true);
+      let selectedconversationId = "";
+      const keys = Object.keys(convoClick).reverse();
 
-        for (const key of keys) {
-          if (convoClick[key] === true) {
-            console.log("ccideos:", videos[key][0]);
-            selectedconversationId = videos[key][0].conversationId;
-            break;
-          }
+      for (const key of keys) {
+        if (convoClick[key] === true) {
+          selectedconversationId = videos[key][0].conversationId;
+          break;
         }
- 
-        const generateRes = await axios.post(
-              "http://localhost:8000/generate_video",
-              { prompt:prompt, conversationId:selectedconversationId},
-              { withCredentials: true }
-        );
+      }
+      const generateRes = await axios.post(
+        "http://localhost:8000/generate_video",
+        { prompt, conversationId: selectedconversationId },
+        { withCredentials: true }
+      );
 
+      const resData = generateRes.data;
+
+      if (resData.error) {
+        console.error("Backend Error:", resData.error);
+        // alert(`Failed to generate video: ${resData.error}`);
+        setError(true);
+      } else if (resData.data?.url) {
+        const newUrl = resData.data.url;
+        setCurrentVideo((prev) => [...prev, { prompt, url: newUrl, selectedconversationId }]);
         
-
-          const newUrl = generateRes.data.data.url;
-          setCurrentVideo((prev) => [...prev, { prompt, url: newUrl, selectedconversationId }]);
-          setLoading(false)
-          setPrompt(""); 
-
-        } catch (err) {
-          console.error("Error generating or adding video:", err);
-        }
+      } else {
+        console.warn("Unexpected backend response:", resData);
+        // alert("Something went wrong. Please try again later.");
+        setError(true);
+      }
+      setPrompt("");
+    } catch (err) {
+      console.error("Unexpected Error:", err);
+      // alert("A network or server error occurred.");
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
   };
+
    const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault(); 
@@ -99,8 +116,8 @@ export default function DashBoard() {
         {isNewChat && <Chat />}
 
         {!isNewChat && (
-          <div className="w-screen overflow-auto custom-scrollbar pb-32">
-            <div className=" pr-4 pt-4  ">
+          <div className="w-screen overflow-auto custom-scrollbar ">
+            <div className="pr-4  pt-4 pb-34">
               {videos.map((video, index) => {
                 if (convoClick[index]) {
                   return (
@@ -113,9 +130,10 @@ export default function DashBoard() {
                           <VideoPlayer url={vid.url} />
                         </div>
                       ))}
+                      {/* loading spinner */}
                       <div className="text-end flex justify-end ">
                           <div className="flex">
-                              <span className={`bg-white text-black  rounded-xl flex gap-2 ${loading ? "px-4 py-2" : ""}`}>
+                              <span className={`bg-white text-black rounded-xl flex gap-2 ${loading ? "px-4 py-2" : ""}`}>
                                   {loading && <svg
                               className="animate-spin h-8 w-8 text-purple-500 "
                               xmlns="http://www.w3.org/2000/svg"
@@ -138,9 +156,20 @@ export default function DashBoard() {
                               </svg>}
                                   {`${loading ? "loading..." : ""}`}
                                   
+                                  
                               </span>
                           </div> 
                       </div>
+                      {/* error */}
+                      <div className="text-end flex justify-end ">
+                          <div className="flex">
+                              <span className={`bg-white text-black rounded-xl flex gap-2 ${error ? "px-4 py-2" : ""}`}>
+                                  {error && <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ban-icon lucide-ban"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>}
+                                  {`${error ? "Error while genrating the manim code" : ""}`}
+                              </span>
+                          </div> 
+                      </div>
+
 
                       <div className={`text-center fixed bottom-0 flex justify-center items-end  w-full`}>
                           <textarea name="message" rows="5" cols="100" className="rounded-3xl bg-neutral-700 outline-none border-none pl-4 pt-2 text-md mb-4" placeholder="Ask Anything here" onKeyDown={handleKeyDown} onChange={(e) => setPrompt(e.target.value)} value={prompt}>
@@ -152,8 +181,10 @@ export default function DashBoard() {
                     </div>
                   );
                 }
-                return null;
+                
               })}
+              
+              
               
 
               
@@ -168,3 +199,4 @@ export default function DashBoard() {
     </div>
   );
 }
+

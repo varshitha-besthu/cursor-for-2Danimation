@@ -1,4 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=DynaPuff:wght@400..700&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=DynaPuff:wght@400..700&family=Winky+Rough:ital,wght@0,300..900;1,300..900&display=swap');
+
 @import "tailwindcss";
 .custom-scrollbar::-webkit-scrollbar {
   width: 12px;
@@ -14,5 +16,35 @@
 }
 
 @theme {
-  --font-dynapuff: "DynaPuff", sans-serif; 
+  --font-dynapuff: "Winky Rough", sans-serif; 
+}
+
+@theme inline {
+  --animate-spotlight: spotlight 2s ease 0.75s 1 forwards;
+}
+
+@keyframes spotlight {
+  0% {
+    opacity: 0;
+    transform: translate(-72%, -62%) scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -40%) scale(1);
+  }
+}
+
+@theme inline {
+  --animate-ripple: ripple var(--duration, 2s) ease calc(var(--i, 0) * 0.2s)
+    infinite;
+ 
+  @keyframes ripple {
+    0%,
+    100% {
+      transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+      transform: translate(-50%, -50%) scale(0.9);
+    }
+  }
 }
