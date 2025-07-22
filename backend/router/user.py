@@ -131,7 +131,7 @@ def signin(login: LoginRequest, response: Response):
         value=token,
         httponly=True,
         secure=True,
-        sameSite=None,
+        samesite=None,
     )
 
     return {"message": "Login successful", "user_id": str(user["_id"])}
