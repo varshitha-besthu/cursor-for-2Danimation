@@ -81,7 +81,7 @@ async def google_callback(request: Request):
     else:
         user_id = existing_user["_id"]
     access_token = create_access_token({"user_id": str(user_id)})
-    response = RedirectResponse(url="http://localhost:5173/dashboard")
+    response = RedirectResponse(url="https://cursor-for-2-danimation.vercel.app/dashboard")
     response.set_cookie(
         key="access_token",
         value=token,
