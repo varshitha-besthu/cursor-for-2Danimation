@@ -13,7 +13,6 @@ openai  # for OpenAI-compatible APIs like OpenRouter
 python-dotenv  # if you're loading API keys from .env
 requests       # for manual API calls
 typing
-bson
 openai
 pymongo
 cloudinary
