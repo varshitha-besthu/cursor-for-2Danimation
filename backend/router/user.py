@@ -84,7 +84,7 @@ async def google_callback(request: Request):
     response = RedirectResponse(url="https://cursor-for-2-danimation.vercel.app/dashboard")
     response.set_cookie(
         key="access_token",
-        value=token,
+        value=access_token,
         httponly=True,
         secure=True,
         samesite="None"
@@ -183,7 +183,7 @@ async def get_grouped_videos(user_id: str = Depends(get_current_user_id)):
 
     return result[::-1]
 
-@userRouter.post("/logout")
-def logout(response: Response):
-    response.delete_cookie("access_token")
-    return {"message": "Logged out"}
+# @userRouter.post("/logout")
+# def logout(response: Response):
+#     response.delete_cookie("access_token")
+#     return {"message": "Logged out"}
