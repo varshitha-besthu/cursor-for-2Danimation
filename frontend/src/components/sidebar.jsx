@@ -13,7 +13,6 @@ export default function Sidebar(){
     const [sidebar, setSidebar] = useState(true)
     const setNewChat = useSetRecoilState(newChat);
     const newchat = useRecoilValue(newChat);
-    const conversationId = useRecoilValue(convoId);
     const setConversationId = useSetRecoilState(convoId);
     const video = useRecoilValue(videosAtom);
     const convoClick = useRecoilValue(conversationClick);
@@ -21,65 +20,6 @@ export default function Sidebar(){
     const userName = useRecoilValue(userNameAtom);
     const picture = useRecoilValue(pictureAtom);
 
-    // return <div className={`${sidebar ? "z-10 md:z-0 md:max-w-[200px] md:min-w-[200px] bg-neutral-900 " : "w-[30px] bg-neutral-800 border-r-1 border-neutral-600"}  h-screen`}>
-        
-    //     <div className="">
-    //         {/* Navbar */}
-    //         <div className="flex justify-between py-2 px-2">
-    //             <div className={`${sidebar ? "" : "hidden"}`}><Clapperboard size={"14"} /></div>
-    //             <div><PanelRightClose size={"14"} className="cursor-pointer" onClick={() => setSidebar(!sidebar)} /></div>
-    //         </div>
-    //         {/*conversations and new Chat  */}
-
-    //         <div className="cursor-pointer mt-4 p-2 hover:bg-neutral-800 hover: rounded-xl hover: w-[180px]" 
-    //         onClick={() => {
-    //             setNewChat(!newchat)
-    //             const id = uuidv4()
-    //             setConversationId(id)
-    //             // console.log(id)
-    //         }}>
-    //             <div className={`hover:bg-neutral-400 flex items-center ${sidebar ? "bg-neutral-100 text-black px-4 py-2" : ""} rounded-xl`}>
-    //                 <SquarePen size={"14"}/> 
-    //                 <div className={`${sidebar ? "pl-2 text-sm" : "hidden"}`}>New Chat</div>
-                
-    //             </div>
-    //         </div>
-    //         {
-    //             video.slice().reverse().map((vid, index) => (
-    //                 <div className="cursor-pointer mt-2 px-2 py-1 hover:bg-neutral-800 hover: rounded-xl hover: w-[180px] " 
-    //                     onClick={(e) => {
-    //                         setConvoClick(() => {
-    //                             const newState = {};
-    //                             video.forEach((_, i) => {
-    //                                 newState[i] = i === index; 
-    //                             });
-    //                             return newState;
-    //                             });
-    //                         setNewChat(!newChat)
-
-    //                     }}
-    //                     key={index}
-    //                 >
-    //                 <div className="flex items-center">
-    //                     <div className={`${sidebar ? "pl-2 text-sm" : "hidden"} ${convoClick[index] ? "bg-neutral-800 w-full rounded-2xl py-1 " : ""}`}>Conversation {index + 1}</div>
-    //                 </div>
-    //                 </div>
-    //             ))
-    //         }
-    //     </div>
-        
-    // <div className={`fixed bottom-2 ${sidebar ? "w-[160px] md:max-w-[190px] md:min-w-[190px] pl-1 pr-4 py-3" : "max-w-[28px] min-w-[28px] pl-1"}  bg-neutral-800 rounded-xl `}>
-    //         <div className="bg-red-white flex gap-1  w-auto  ">
-    //             <img src={picture} height="22px" width="22px" className="rounded-full"/>
-    //             <div className={`overflow-hidden text-ellipsis whitespace-nowrap ${sidebar ? "" : "hidden"}`}>
-    //                 {userName}
-    //             </div>
-    //         </div>
-
-    //     </div>
-        
-
-    // </div>
     return (
   <>
     {/* Toggle button for small screens */}
