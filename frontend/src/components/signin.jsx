@@ -9,11 +9,11 @@ export default function Signup() {
 
     const handleOnClick = async () => {
         try {
-            const response = await axios.post("http://localhost:8000/signin", 
-                { username, password },
+            const response = await axios.post("https://cursor-for-2danimation.onrender.com/signin", 
+                { username, password, },
                 { withCredentials: true }
             );
-            navigate("/signin");
+            navigate("/dashboard");
         } catch (error) {
             console.error("Signup failed:", error.response?.data || error.message);
         }

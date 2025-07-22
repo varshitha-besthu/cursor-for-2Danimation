@@ -33,7 +33,7 @@ export default function Chat(){
         try {
             setLoading(true)
             const generateRes = await axios.post(
-                "http://localhost:8000/generate_video",
+                "https://cursor-for-2danimation.onrender.com/generate_video",
                 { prompt, conversationId},
                 { withCredentials: true }
             );

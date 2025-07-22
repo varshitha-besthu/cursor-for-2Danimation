@@ -35,10 +35,10 @@ export default function DashBoard() {
     const fetchVideos = async () => {
       try {
         
-        const response = await axios.get("http://localhost:8000/grouped_by_conversation", {
+        const response = await axios.get("https://cursor-for-2danimation.onrender.com/grouped_by_conversation", {
           withCredentials: true, 
         });
-        const user = await axios.get("http://localhost:8000/userInfo",{withCredentials : true});
+        const user = await axios.get("https://cursor-for-2danimation.onrender.com/userInfo",{withCredentials : true});
         console.log(user.data);
         setUserName(user.data.name);
         setPicture(user.data.picture);
@@ -72,7 +72,7 @@ export default function DashBoard() {
         }
       }
       const generateRes = await axios.post(
-        "http://localhost:8000/generate_video",
+        "https://cursor-for-2danimation.onrender.com/generate_video",
         { prompt, conversationId: selectedconversationId },
         { withCredentials: true }
       );
@@ -183,18 +183,10 @@ export default function DashBoard() {
                 }
                 
               })}
-              
-              
-              
-
-              
-
             </div>
           </div>
             
           )}
-
-        
 
     </div>
   );

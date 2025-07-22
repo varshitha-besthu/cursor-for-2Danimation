@@ -130,8 +130,8 @@ def signin(login: LoginRequest, response: Response):
         key="access_token",
         value=token,
         httponly=True,
-        secure=False,
-        samesite="Lax"
+        secure=True,
+        sameSite=None,
     )
 
     return {"message": "Login successful", "user_id": str(user["_id"])}

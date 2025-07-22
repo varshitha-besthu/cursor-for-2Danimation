@@ -1,5 +1,5 @@
 # Core
-manim  # Or latest stable CE version
+manim
 numpy
 scipy
 
@@ -8,14 +8,26 @@ fastapi
 uvicorn[standard]
 
 # AI Integration
-openai  # for OpenAI-compatible APIs like OpenRouter
-# Optional tools (only if you're using them)
-python-dotenv  # if you're loading API keys from .env
-requests       # for manual API calls
-typing
 openai
+OpenAI  # if you're using openai.OpenAI (separate SDK from openai.ChatCompletion)
+requests
+python-dotenv
+
+# Security & Auth
 python-jose[cryptography]
 itsdangerous
+authlib  # used for OAuth
+
+# Database
 pymongo
+
+# Cloudinary Upload
 cloudinary
-authlib
+
+# Utility & Typing
+typing  # not strictly needed in Python 3.5+, but harmless
+bson  # for ObjectId usage
+python-multipart  # if you're dealing with form-data uploads (FastAPI requires it for file uploads)
+
+# Sessions
+starlette
