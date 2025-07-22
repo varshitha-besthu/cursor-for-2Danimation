@@ -15,6 +15,7 @@ requests       # for manual API calls
 typing
 openai
 python-jose[cryptography]
+itsdangerous
 pymongo
 cloudinary
 authlib
