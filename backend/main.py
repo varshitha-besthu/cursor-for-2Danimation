@@ -7,7 +7,6 @@ import re
 from router.user import userRouter
 from openai import OpenAI # type: ignore
 from fastapi.middleware.cors import CORSMiddleware
-# from router.upload import router as uploadRouter
 from libs.cloudinary import upload_video
 from starlette.concurrency import run_in_threadpool
 from pydantic import BaseModel,Field
@@ -37,10 +36,10 @@ client = OpenAI(
 app = FastAPI()
 origins = [
      "https://cursor-for-2-danimation.vercel.app",
+     "http://localhost:5173"
 ]
 app.add_middleware(SessionMiddleware, secret_key=os.getenv("SESSION_SECRET_KEY", "super-secret-key"))
 app.include_router(userRouter)
-# app.include_router(uploadRouter)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,            

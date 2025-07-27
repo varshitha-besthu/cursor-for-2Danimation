@@ -83,7 +83,7 @@ async def google_callback(request: Request):
     access_token = create_access_token({"user_id": str(user_id)})
     response = RedirectResponse(url="https://cursor-for-2-danimation.vercel.app/dashboard")
     response.set_cookie(
-        key="access_token",
+        key="token",
         value=access_token,
         httponly=True,
         secure=True,
@@ -127,11 +127,11 @@ def signin(login: LoginRequest, response: Response):
     token = create_access_token({"user_id": str(user["_id"])})
 
     response.set_cookie(
-        key="access_token",
+        key="token",
         value=token,
         httponly=True,
         secure=True,
-        samesite="None",
+        samesite="none",
     )
 
     return {"message": "Login successful", "user_id": str(user["_id"])}

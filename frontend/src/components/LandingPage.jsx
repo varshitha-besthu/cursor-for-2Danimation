@@ -15,7 +15,7 @@ export default function LandingPage(){
             <Spotlight  className={"-top-40 left-0 md:-top-0 md:left-60"} fill={"#ffffff"}/>
             
             <div className="text-white  flex justify-center items-center pt-80">
-                <div className="max-w-[700px] ">
+                <div className="max-w-[700px]">
                     <div className="flex justify-center items-center text-7xl text-center font-bold">
                     <div>
                         🎬 Turn Ideas Into Animations  
@@ -31,7 +31,7 @@ export default function LandingPage(){
                 </div>
                 
             </div>
-            <section className="py-40 px-4  text-white text-center">
+            <div className="py-40 px-4  text-white text-center">
                 <h2 className="text-3xl font-bold mb-10 ">How It Works</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-5xl mx-auto">
 
@@ -51,11 +51,11 @@ export default function LandingPage(){
                     </div>
 
                 </div>
-            </section>
+            </div>
 
         </div>
-        <div className="flex justify-center w-screen h-screen bg-black/[0.96]">
-        <div>
+        <div className={`flex justify-center w-screen md:h-screen bg-black/[0.96]`}>
+            <div>
 
         
             <div className="  ">
