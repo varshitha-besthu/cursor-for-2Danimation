@@ -87,7 +87,7 @@ async def google_callback(request: Request):
         value=access_token,
         httponly=True,
         secure=True,
-        samesite="None"
+        samesite="none"
     )
     return response
 

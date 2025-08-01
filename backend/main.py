@@ -99,7 +99,12 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
 
 
         print("fuck it completed the generate_scene.py")
-        video_path = rf"C:\Users\varsh\Desktop\2D-animations-video\backend\media\videos\generated_scene\480p15\{class_name}.mp4"
+        
+
+        output_dir = os.path.join("media", "videos", "generated_scene", "480p15")
+        class_name = "MyScene"
+        filename = f"{class_name}.mp4"
+        video_path = os.path.join(output_dir, filename)
 
         if not os.path.exists(video_path):
             return {"error": "Video file not found."}
