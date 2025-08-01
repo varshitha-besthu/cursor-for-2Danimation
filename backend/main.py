@@ -106,6 +106,7 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
         filename = f"{class_name}.mp4"
         video_path = os.path.join(output_dir, filename)
 
+        print("video path", video_path)
         if not os.path.exists(video_path):
             return {"error": "Video file not found."}
         
