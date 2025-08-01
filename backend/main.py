@@ -7,7 +7,6 @@ import re
 from router.user import userRouter
 from openai import OpenAI # type: ignore
 from fastapi.middleware.cors import CORSMiddleware
-# from router.upload import router as uploadRouter
 from libs.cloudinary import upload_video
 from starlette.concurrency import run_in_threadpool
 from pydantic import BaseModel,Field
@@ -37,10 +36,10 @@ client = OpenAI(
 app = FastAPI()
 origins = [
      "https://cursor-for-2-danimation.vercel.app",
+     "http://localhost:5173"
 ]
 app.add_middleware(SessionMiddleware, secret_key=os.getenv("SESSION_SECRET_KEY", "super-secret-key"))
 app.include_router(userRouter)
-# app.include_router(uploadRouter)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,            
@@ -100,7 +99,12 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
 
 
         print("fuck it completed the generate_scene.py")
-        video_path = rf"C:\Users\varsh\Desktop\2D-animations-video\backend\media\videos\generated_scene\480p15\{class_name}.mp4"
+        
+
+        output_dir = os.path.join("media", "videos", "generated_scene", "480p15")
+        class_name = "MyScene"
+        filename = f"{class_name}.mp4"
+        video_path = os.path.join(output_dir, filename)
 
         if not os.path.exists(video_path):
             return {"error": "Video file not found."}

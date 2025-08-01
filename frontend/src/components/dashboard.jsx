@@ -36,6 +36,10 @@ export default function DashBoard() {
         
         const response = await axios.get("https://cursor-for-2danimation.onrender.com/grouped_by_conversation", {
           withCredentials: true, 
+          headers: {
+            "Content-Type": "application/json"
+          }
+
         });
         const user = await axios.get("https://cursor-for-2danimation.onrender.com/userInfo",{withCredentials : true});
         console.log(user.data);

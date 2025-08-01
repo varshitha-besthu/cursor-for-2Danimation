@@ -11,7 +11,12 @@ export default function Signup() {
         try {
             const response = await axios.post("https://cursor-for-2danimation.onrender.com/signup", 
                 { username, password, picture: "hello guru kosame ra jeeveihtam"},
-                { withCredentials: true }
+                { withCredentials: true },
+                {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
             );
             navigate("/signin");
         } catch (error) {
