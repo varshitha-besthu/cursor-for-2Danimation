@@ -83,7 +83,7 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
                         "generated_scene.py",
                         class_name,
                         "-ql",
-                        "--output_file", output_path
+                        "--output_file", f"{class_name}.mp4"
                     ],
                     cwd=BASE_DIR,
                     env=env,
