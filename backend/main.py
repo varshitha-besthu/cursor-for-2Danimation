@@ -16,6 +16,7 @@ from bson import ObjectId
 from fastapi import Depends
 from configurations import user_collection
 import sys
+import glob
 from datetime import datetime
 
 import shutil
@@ -72,6 +73,9 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
         
         env = os.environ.copy()  
         # result = await run_in_threadpool(render_video_sync)
+        BASE_DIR = os.getcwd()
+        output_path = os.path.join(BASE_DIR, "media", "videos", f"{class_name}.mp4")
+
         with open("render.log", "w") as f:
             try :
                 result = subprocess.run(
@@ -80,9 +84,10 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
                         "generated_scene.py",
                         class_name,
                         "-ql",
-                        "--output_file", f"{class_name}.mp4"
+                        "--media_dir", os.path.join(BASE_DIR, "media"),
+                        "--video_dir", os.path.join(BASE_DIR, "media", "videos")
                     ],
-                    cwd=os.getcwd(),
+                    cwd=BASE_DIR,
                     env=env,
                     stdout=f,
                     stderr=subprocess.STDOUT,
@@ -95,16 +100,46 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
                 return {"return code": 130, "output": "User interrupted the process"}
             except subprocess.CalledProcessError as e:
                 print("Return code:", e.returncode)
-            
 
-
-        print("fuck it completed the generate_scene.py")
         
 
-        output_dir = os.path.join("media", "videos", "generated_scene", "480p15")
-        class_name = "MyScene"
+        with open("render.log", "r") as log_file:
+            log_contents = log_file.read()
+            print("=== Render Log ===")
+            print(log_contents)
+
+        def find_video(class_name):
+            search_paths = [
+                "/opt/render/project/src/backend/media/videos/480p15",
+                "/opt/render/project/src/backend/media/videos",
+                "/tmp"
+            ]
+            for path in search_paths:
+                matches = glob.glob(os.path.join(path, f"{class_name}.mp4"))
+                if matches:
+                    print("Found video at:", matches[0])
+                    return matches[0]
+            print("Video not found anywhere.")
+            return None
+        
+        find_video(class_name=class_name);
+
+        print("fuck it completed the generate_scene.py")
+        BASE_DIR = os.getcwd()
+        
+        output_dir = os.path.join(BASE_DIR, "media", "videos")
+        os.makedirs(output_dir, exist_ok=True)
+        
+        class_name = class_name
         filename = f"{class_name}.mp4"
         video_path = os.path.join(output_dir, filename)
+
+        print("BASE_DIR:", BASE_DIR)
+        print("Output dir:", output_dir)
+        print("Looking for video:", video_path)
+        print("does video path exist", os.path.exists(output_dir));
+        print("Exists?", os.path.exists(video_path))
+        
 
         if not os.path.exists(video_path):
             return {"error": "Video file not found."}
