@@ -73,7 +73,7 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
         env = os.environ.copy()  
         # result = await run_in_threadpool(render_video_sync)
         BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-        output_path = os.path.join(BASE_DIR, "media", "videos", "generated_scene", "480p15", f"{class_name}.mp4")
+        output_path = os.path.join(BASE_DIR, "media", "videos", "480p15", f"{class_name}.mp4")
 
         with open("render.log", "w") as f:
             try :
@@ -108,7 +108,7 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
         print("fuck it completed the generate_scene.py")
         BASE_DIR = os.getcwd()
         
-        output_dir = os.path.join(BASE_DIR, "media", "videos", "generated_scene", "480p15")
+        output_dir = os.path.join(BASE_DIR, "media", "videos", "480p15")
         os.makedirs(output_dir, exist_ok=True)
         
         class_name = class_name
