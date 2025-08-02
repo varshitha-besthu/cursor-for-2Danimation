@@ -72,7 +72,6 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
         print("About to start video generating...")
         
         env = os.environ.copy()  
-        # result = await run_in_threadpool(render_video_sync)
         BASE_DIR = os.getcwd()
         output_path = os.path.join(BASE_DIR, "media", "videos", f"{class_name}.mp4")
 
@@ -85,7 +84,6 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
                         class_name,
                         "-ql",
                         "--media_dir", os.path.join(BASE_DIR, "media"),
-                        "--video_dir", os.path.join(BASE_DIR, "media", "videos")
                     ],
                     cwd=BASE_DIR,
                     env=env,
@@ -108,21 +106,7 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
             print("=== Render Log ===")
             print(log_contents)
 
-        def find_video(class_name):
-            search_paths = [
-                "/opt/render/project/src/backend/media/videos/480p15",
-                "/opt/render/project/src/backend/media/videos",
-                "/tmp"
-            ]
-            for path in search_paths:
-                matches = glob.glob(os.path.join(path, f"{class_name}.mp4"))
-                if matches:
-                    print("Found video at:", matches[0])
-                    return matches[0]
-            print("Video not found anywhere.")
-            return None
         
-        find_video(class_name=class_name);
 
         print("fuck it completed the generate_scene.py")
         BASE_DIR = os.getcwd()
