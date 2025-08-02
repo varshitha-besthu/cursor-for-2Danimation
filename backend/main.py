@@ -110,8 +110,9 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
 
        
 
-        video_matches = glob.glob(os.path.join(BASE_DIR, "media", "**", "*.mp4"), recursive=True)
-        print("=== Found MP4s ===")
+        import glob
+        video_matches = glob.glob("/opt/render/project/src/backend/**/*.mp4", recursive=True)
+        print("=== Found MP4s Anywhere ===")
         for match in video_matches:
             print(match)
 
