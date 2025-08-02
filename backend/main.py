@@ -98,18 +98,23 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
                 return {"return code": 130, "output": "User interrupted the process"}
             except subprocess.CalledProcessError as e:
                 print("Return code:", e.returncode)
-            
 
 
         print("fuck it completed the generate_scene.py")
-        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+        BASE_DIR = os.getcwd()
         
         output_dir = os.path.join(BASE_DIR, "media", "videos", "generated_scene", "480p15")
+        os.makedirs(output_dir, exist_ok=True)
+        
         class_name = class_name
         filename = f"{class_name}.mp4"
         video_path = os.path.join(output_dir, filename)
 
-        print("video path", video_path)
+        print("BASE_DIR:", BASE_DIR)
+        print("Output dir:", output_dir)
+        print("Looking for video:", video_path)
+        print("Exists?", os.path.exists(video_path))
+        
         if not os.path.exists(video_path):
             return {"error": "Video file not found."}
         
