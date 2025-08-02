@@ -120,6 +120,8 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
                     return matches[0]
             print("Video not found anywhere.")
             return None
+        
+        find_video();
 
         print("fuck it completed the generate_scene.py")
         BASE_DIR = os.getcwd()
