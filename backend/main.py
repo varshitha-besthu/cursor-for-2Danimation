@@ -100,6 +100,10 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
             except subprocess.CalledProcessError as e:
                 print("Return code:", e.returncode)
 
+        with open("render.log", "r") as log_file:
+            log_contents = log_file.read()
+            print("=== Render Log ===")
+            print(log_contents)
 
         print("fuck it completed the generate_scene.py")
         BASE_DIR = os.getcwd()
