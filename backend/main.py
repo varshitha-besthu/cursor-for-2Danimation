@@ -99,9 +99,18 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
 
 
         print("fuck it completed the generate_scene.py")
-        
-
         BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+        generated_video_path = os.path.join(BASE_DIR, f"{class_name}.mp4")
+        output_dir = os.path.join(BASE_DIR, "media", "videos", "generated_scene", "480p15")
+        os.makedirs(output_dir, exist_ok=True)  
+        final_video_path = os.path.join(output_dir, f"{class_name}.mp4")
+
+        shutil.move(generated_video_path, final_video_path)
+
+        print("✅ Moved video to:", final_video_path)
+
+
+        
         output_dir = os.path.join(BASE_DIR, "media", "videos", "generated_scene", "480p15")
         class_name = class_name
         filename = f"{class_name}.mp4"
