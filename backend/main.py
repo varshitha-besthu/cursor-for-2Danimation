@@ -107,13 +107,19 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
             print("=== Render Log ===")
             print(log_contents)
 
-       
-
-        import glob
-        video_matches = glob.glob("/opt/render/project/src/backend/**/*.mp4", recursive=True)
-        print("=== Found MP4s Anywhere ===")
-        for match in video_matches:
-            print(match)
+        def find_video(class_name):
+            search_paths = [
+                "/opt/render/project/src/backend/media/videos/480p15",
+                "/opt/render/project/src/backend/media/videos",
+                "/tmp"
+            ]
+            for path in search_paths:
+                matches = glob.glob(os.path.join(path, f"{class_name}.mp4"))
+                if matches:
+                    print("Found video at:", matches[0])
+                    return matches[0]
+            print("Video not found anywhere.")
+            return None
 
         print("fuck it completed the generate_scene.py")
         BASE_DIR = os.getcwd()
