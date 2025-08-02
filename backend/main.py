@@ -73,7 +73,8 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
         
         env = os.environ.copy()  
         BASE_DIR = os.getcwd()
-        output_path = os.path.join(BASE_DIR, "media", "videos", f"{class_name}.mp4")
+        output_dir = os.path.join(BASE_DIR, "media", "videos")
+        os.makedirs(output_dir, exist_ok=True)
 
         with open("render.log", "w") as f:
             try :
@@ -83,7 +84,13 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
                         "generated_scene.py",
                         class_name,
                         "-ql",
-                        "--media_dir", os.path.join(BASE_DIR, "media"),
+                        "--media_dir", output_dir ,
+                        "--output_file", class_name,
+                        "-o",
+                        "--format", "mp4",
+                        "--progress_bar", "none"
+
+
                     ],
                     cwd=BASE_DIR,
                     env=env,
