@@ -16,6 +16,7 @@ from bson import ObjectId
 from fastapi import Depends
 from configurations import user_collection
 import sys
+import glob
 from datetime import datetime
 
 import shutil
@@ -100,10 +101,19 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
             except subprocess.CalledProcessError as e:
                 print("Return code:", e.returncode)
 
+        
+
         with open("render.log", "r") as log_file:
             log_contents = log_file.read()
             print("=== Render Log ===")
             print(log_contents)
+
+       
+
+        video_matches = glob.glob(os.path.join(BASE_DIR, "media", "**", "*.mp4"), recursive=True)
+        print("=== Found MP4s ===")
+        for match in video_matches:
+            print(match)
 
         print("fuck it completed the generate_scene.py")
         BASE_DIR = os.getcwd()
