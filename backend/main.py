@@ -72,6 +72,9 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
         
         env = os.environ.copy()  
         # result = await run_in_threadpool(render_video_sync)
+        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+        output_path = os.path.join(BASE_DIR, "media", "videos", "generated_scene", "480p15", f"{class_name}.mp4")
+
         with open("render.log", "w") as f:
             try :
                 result = subprocess.run(
@@ -80,9 +83,9 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
                         "generated_scene.py",
                         class_name,
                         "-ql",
-                        "--output_file", f"{class_name}.mp4"
+                        "--output_file", output_path
                     ],
-                    cwd=os.getcwd(),
+                    cwd=BASE_DIR,
                     env=env,
                     stdout=f,
                     stderr=subprocess.STDOUT,
@@ -100,16 +103,6 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
 
         print("fuck it completed the generate_scene.py")
         BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-        generated_video_path = os.path.join(BASE_DIR, f"{class_name}.mp4")
-        output_dir = os.path.join(BASE_DIR, "media", "videos", "generated_scene", "480p15")
-        os.makedirs(output_dir, exist_ok=True)  
-        final_video_path = os.path.join(output_dir, f"{class_name}.mp4")
-
-        shutil.move(generated_video_path, final_video_path)
-
-        print("✅ Moved video to:", final_video_path)
-
-
         
         output_dir = os.path.join(BASE_DIR, "media", "videos", "generated_scene", "480p15")
         class_name = class_name
