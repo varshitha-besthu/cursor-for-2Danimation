@@ -106,6 +106,26 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
             print("=== Render Log ===")
             print(log_contents)
 
+        # After the subprocess.run() call, try these paths:
+        possible_paths = [
+            os.path.join(BASE_DIR, "media", "videos", "generated_scene", "480p15", f"{class_name}.mp4"),
+            os.path.join(BASE_DIR, "media", "videos", "generated_scene", f"{class_name}.mp4"),
+            os.path.join(BASE_DIR, "media", "videos", f"{class_name}.mp4"),
+        ]
+
+        video_path = None
+        for path in possible_paths:
+            if os.path.exists(path):
+                video_path = path
+                break
+
+        if not video_path:
+            # Debug: List directory contents
+            print("Searching in:", os.path.join(BASE_DIR, "media", "videos"))
+            for root, dirs, files in os.walk(os.path.join(BASE_DIR, "media")):
+                print(root, dirs, files)
+            return {"error": "Video file not found at any expected location."}
+
         
 
         print("fuck it completed the generate_scene.py")
