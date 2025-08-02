@@ -73,7 +73,7 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
         
         env = os.environ.copy()  
         # result = await run_in_threadpool(render_video_sync)
-        BASE_DIR = os.path.dirname(os.getcwd());
+        BASE_DIR = os.getcwd()
         output_path = os.path.join(BASE_DIR, "media", "videos", f"{class_name}.mp4")
 
         with open("render.log", "w") as f:
