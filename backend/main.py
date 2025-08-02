@@ -113,8 +113,10 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
         print("BASE_DIR:", BASE_DIR)
         print("Output dir:", output_dir)
         print("Looking for video:", video_path)
+        print("does video path exist", output_dir);
         print("Exists?", os.path.exists(video_path))
         
+
         if not os.path.exists(video_path):
             return {"error": "Video file not found."}
         
