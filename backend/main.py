@@ -141,7 +141,7 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
         print("fuck it completed the generate_scene.py")
         BASE_DIR = os.getcwd()
         
-        output_dir = os.path.join(BASE_DIR, "media", "videos")
+        output_dir = os.path.join(BASE_DIR, "media", "videos", "videos", "generated_scene", "480p15")
         os.makedirs(output_dir, exist_ok=True)
         
         class_name = class_name
@@ -156,7 +156,10 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
         
 
         if not os.path.exists(video_path):
-            return {"error": "Video file not found."}
+            print("Directory contents:")
+            for root, dirs, files in os.walk(os.path.join(BASE_DIR, "media")):
+                print(f"{root}: {files}")
+            return {"error": f"Video file not found at {video_path}"}
         
         url = upload_video(video_path)
 
