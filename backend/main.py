@@ -85,12 +85,7 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
                         class_name,
                         "-ql",
                         "--media_dir", output_dir ,
-                        "--output_file", class_name,
-                        "-o",
-                        "--format", "mp4",
-                        "--progress_bar", "none"
-
-
+                        "--output_file", f"{class_name}.mp4",
                     ],
                     cwd=BASE_DIR,
                     env=env,
@@ -113,6 +108,13 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
             print("=== Render Log ===")
             print(log_contents)
 
+        # Add this after rendering fails
+        partial_dir = os.path.join(BASE_DIR, "media", "partial_movie_files", class_name)
+        if os.path.exists(partial_dir):
+            print(f"Found partial files: {os.listdir(partial_dir)}")
+        else:   
+            print("No partial files directory found")
+
         # After the subprocess.run() call, try these paths:
         possible_paths = [
             os.path.join(BASE_DIR, "media", "videos", "generated_scene", "480p15", f"{class_name}.mp4"),
@@ -127,11 +129,12 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
                 break
 
         if not video_path:
-            # Debug: List directory contents
             print("Searching in:", os.path.join(BASE_DIR, "media", "videos"))
             for root, dirs, files in os.walk(os.path.join(BASE_DIR, "media")):
                 print(root, dirs, files)
             return {"error": "Video file not found at any expected location."}
+
+
 
         
 
