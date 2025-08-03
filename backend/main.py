@@ -73,7 +73,6 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
         
         env = os.environ.copy()  
         BASE_DIR = os.getcwd()
-        os.makedirs(output_dir, exist_ok=True)
 
         with open("render.log", "w") as f:
             try :
