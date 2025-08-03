@@ -73,7 +73,6 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
         
         env = os.environ.copy()  
         BASE_DIR = os.getcwd()
-        output_dir = os.path.join(BASE_DIR, "media", "videos")
         os.makedirs(output_dir, exist_ok=True)
 
         with open("render.log", "w") as f:
@@ -84,7 +83,6 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
                         "generated_scene.py",
                         class_name,
                         "-ql",
-                        "--media_dir", output_dir ,
                         "--output_file", f"{class_name}.mp4",
                     ],
                     cwd=BASE_DIR,
@@ -101,45 +99,13 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
             except subprocess.CalledProcessError as e:
                 print("Return code:", e.returncode)
 
-        
-
         with open("render.log", "r") as log_file:
             log_contents = log_file.read()
             print("=== Render Log ===")
             print(log_contents)
 
-        # Add this after rendering fails
-        partial_dir = os.path.join(BASE_DIR, "media", "partial_movie_files", class_name)
-        if os.path.exists(partial_dir):
-            print(f"Found partial files: {os.listdir(partial_dir)}")
-        else:   
-            print("No partial files directory found")
-
-        # After the subprocess.run() call, try these paths:
-        possible_paths = [
-            os.path.join(BASE_DIR, "media", "videos", "generated_scene", "480p15", f"{class_name}.mp4"),
-            os.path.join(BASE_DIR, "media", "videos", "generated_scene", f"{class_name}.mp4"),
-            os.path.join(BASE_DIR, "media", "videos", f"{class_name}.mp4"),
-        ]
-
-        video_path = None
-        for path in possible_paths:
-            if os.path.exists(path):
-                video_path = path
-                break
-
-        if not video_path:
-            print("Searching in:", os.path.join(BASE_DIR, "media", "videos"))
-            for root, dirs, files in os.walk(os.path.join(BASE_DIR, "media")):
-                print(root, dirs, files)
-            return {"error": "Video file not found at any expected location."}
-
-
-
-        
-
         print("fuck it completed the generate_scene.py")
-        BASE_DIR = os.getcwd()
+
         
         output_dir = os.path.join(BASE_DIR, "media", "videos", "videos", "generated_scene", "480p15")
         os.makedirs(output_dir, exist_ok=True)
@@ -151,7 +117,7 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
         print("BASE_DIR:", BASE_DIR)
         print("Output dir:", output_dir)
         print("Looking for video:", video_path)
-        print("does video path exist", os.path.exists(output_dir));
+        print("does video path exist", os.path.exists(video_path));
         print("Exists?", os.path.exists(video_path))
         
 
