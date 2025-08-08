@@ -57,6 +57,10 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
             messages=[{"role":"user","content":f"You are a Manim expert. Return only valid Manim Community Edition Python code. Do not include any explanations or comments. I want just the code block, nothing else. Avoid using any external libraries like scipy, numpy, or networkx. Use only core Manim features. Keep the code minimal, with one class .Add import statment for manim. Now create a Manim animation to explain {promptRequest.prompt}."}]
         )
 
+        if(response == None):
+            return {"error" : "No response"}
+        
+
         code = response.choices[0].message.content
         cleaned_code = code.replace("```python", "").replace("```", "").strip()
 
@@ -106,7 +110,7 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
         print("fuck it completed the generate_scene.py")
 
         
-        output_dir = os.path.join(BASE_DIR, "media", "videos", "videos", "generated_scene", "480p15")
+        output_dir = os.path.join(BASE_DIR, "media", "videos", "generated_scene", "480p15")
         os.makedirs(output_dir, exist_ok=True)
         
         class_name = class_name
