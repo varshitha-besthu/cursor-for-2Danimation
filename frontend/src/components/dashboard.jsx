@@ -44,7 +44,13 @@ export default function DashBoard() {
         const user = await axios.get("https://cursor-for-2danimation.onrender.com/userInfo",{withCredentials : true});
         console.log(user.data);
         setUserName(user.data.name);
-        setPicture(user.data.picture);
+        if(user.data.picture === "hello guru kosame ra jeeveihtam"){
+
+          setPicture("https://t4.ftcdn.net/jpg/02/29/75/83/360_F_229758328_7x8jwCwjtBMmC6rgFzLFhZoEpLobB6L8.jpg");
+        }
+        else{
+          setPicture(user.data.picture);
+        }
 
         setVideos(response.data);
         
