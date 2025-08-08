@@ -57,6 +57,10 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
             messages=[{"role":"user","content":f"You are a Manim expert. Return only valid Manim Community Edition Python code. Do not include any explanations or comments. I want just the code block, nothing else. Avoid using any external libraries like scipy, numpy, or networkx. Use only core Manim features. Keep the code minimal, with one class .Add import statment for manim. Now create a Manim animation to explain {promptRequest.prompt}."}]
         )
 
+        if(response == None):
+            return {"error" : "No response"}
+        
+
         code = response.choices[0].message.content
         cleaned_code = code.replace("```python", "").replace("```", "").strip()
 
@@ -72,9 +76,7 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
         print("About to start video generating...")
         
         env = os.environ.copy()  
-        # result = await run_in_threadpool(render_video_sync)
         BASE_DIR = os.getcwd()
-        output_path = os.path.join(BASE_DIR, "media", "videos", f"{class_name}.mp4")
 
         with open("render.log", "w") as f:
             try :
@@ -84,8 +86,7 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
                         "generated_scene.py",
                         class_name,
                         "-ql",
-                        "--media_dir", os.path.join(BASE_DIR, "media"),
-                        "--video_dir", os.path.join(BASE_DIR, "media", "videos")
+                        "--output_file", f"{class_name}.mp4",
                     ],
                     cwd=BASE_DIR,
                     env=env,
@@ -101,33 +102,15 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
             except subprocess.CalledProcessError as e:
                 print("Return code:", e.returncode)
 
-        
-
         with open("render.log", "r") as log_file:
             log_contents = log_file.read()
             print("=== Render Log ===")
             print(log_contents)
 
-        def find_video(class_name):
-            search_paths = [
-                "/opt/render/project/src/backend/media/videos/480p15",
-                "/opt/render/project/src/backend/media/videos",
-                "/tmp"
-            ]
-            for path in search_paths:
-                matches = glob.glob(os.path.join(path, f"{class_name}.mp4"))
-                if matches:
-                    print("Found video at:", matches[0])
-                    return matches[0]
-            print("Video not found anywhere.")
-            return None
-        
-        find_video(class_name=class_name);
-
         print("fuck it completed the generate_scene.py")
-        BASE_DIR = os.getcwd()
+
         
-        output_dir = os.path.join(BASE_DIR, "media", "videos")
+        output_dir = os.path.join(BASE_DIR, "media", "videos", "generated_scene", "480p15")
         os.makedirs(output_dir, exist_ok=True)
         
         class_name = class_name
@@ -137,12 +120,15 @@ async def generate_video(promptRequest: PromptRequest, user_id: str = Depends(ge
         print("BASE_DIR:", BASE_DIR)
         print("Output dir:", output_dir)
         print("Looking for video:", video_path)
-        print("does video path exist", os.path.exists(output_dir));
+        print("does video path exist", os.path.exists(video_path));
         print("Exists?", os.path.exists(video_path))
         
 
         if not os.path.exists(video_path):
-            return {"error": "Video file not found."}
+            print("Directory contents:")
+            for root, dirs, files in os.walk(os.path.join(BASE_DIR, "media")):
+                print(f"{root}: {files}")
+            return {"error": f"Video file not found at {video_path}"}
         
         url = upload_video(video_path)
 

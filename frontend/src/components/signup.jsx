@@ -10,7 +10,7 @@ export default function Signup() {
     const handleOnClick = async () => {
         try {
             const response = await axios.post("https://cursor-for-2danimation.onrender.com/signup", 
-                { username, password, picture: "hello guru kosame ra jeeveihtam"},
+                { username, password, picture: ""},
                 { withCredentials: true },
                 {
                     headers: {
