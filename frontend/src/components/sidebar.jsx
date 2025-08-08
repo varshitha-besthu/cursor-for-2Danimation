@@ -19,10 +19,11 @@ export default function Sidebar(){
     const setConvoClick = useSetRecoilState(conversationClick);
     const userName = useRecoilValue(userNameAtom);
     const picture = useRecoilValue(pictureAtom);
+    const setPicture = useSetRecoilState(pictureAtom)
 
     useEffect(() => {
-        if(picture == "hello guru kosame ra jeeveihtam"){
-          picture = "https://t4.ftcdn.net/jpg/02/29/75/83/360_F_229758328_7x8jwCwjtBMmC6rgFzLFhZoEpLobB6L8.jpg"
+        if(picture === "hello guru kosame ra jeeveihtam"){
+          setPicture("https://t4.ftcdn.net/jpg/02/29/75/83/360_F_229758328_7x8jwCwjtBMmC6rgFzLFhZoEpLobB6L8.jpg")
         }
       },[])
 
