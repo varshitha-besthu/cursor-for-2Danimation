@@ -1,5 +1,5 @@
 import {Clapperboard, PanelRightClose, Plus, SquarePen} from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useRecoilValue, useSetRecoilState } from "recoil"
 import { newChat } from "../store/newchatAtom"
 import { convoId } from "../store/conversationIdAtom"
@@ -20,7 +20,15 @@ export default function Sidebar(){
     const userName = useRecoilValue(userNameAtom);
     const picture = useRecoilValue(pictureAtom);
 
+    useEffect(() => {
+        if(picture == ""){
+          picture = "https://t4.ftcdn.net/jpg/02/29/75/83/360_F_229758328_7x8jwCwjtBMmC6rgFzLFhZoEpLobB6L8.jpg"
+        }
+      },[])
+
     return (
+
+      
   <>
     {/* Toggle button for small screens */}
     <div className="md:hidden fixed top-2 left-2 z-50">
@@ -97,7 +105,7 @@ export default function Sidebar(){
           ))}
       </div>
 
-      {/* Bottom Profile Section */}
+     
       <div className="absolute bottom-2 left-2 right-2 bg-neutral-800 rounded-xl px-2 py-3 flex items-center gap-2">
         <img
           src={picture}
